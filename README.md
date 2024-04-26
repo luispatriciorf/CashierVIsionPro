@@ -8,7 +8,10 @@ Cashier Vision Pro is designed to streamline the checkout process in grocery sto
 
 **Features**
 
-Product Recognition: Utilizes computer vision to recognize grocery items in real-time.
-Automatic Billing: Generates bills automatically based on the scanned items.
-Efficiency: Speeds up the checkout process, reducing waiting times for customers.
-Accuracy: Minimizes errors associated with manual data entry.
+1. Product Recognition: Utilizes computer vision to recognize grocery items in real-time.
+
+2. Automatic Billing: Generates bills automatically based on the scanned items.
+
+3. Efficiency: Speeds up the checkout process, reducing waiting times for customers.
+
+4. Accuracy: Minimizes errors associated with manual data entry.
