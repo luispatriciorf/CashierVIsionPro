@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashier Vision Pro Checkout</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!--<script src="https://cdn.jsdelivr.net/npm/qrious"></script>  Agrega la biblioteca QRious -->
+    <style>
+        .checkout-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 700px; /* Ajusta este valor según sea necesario */
+            margin: auto; /* Centra el contenido horizontalmente */
+        }
+        .item {
+            flex-basis: 100%; /* Ajusta el tamaño de cada artículo */
+            margin-bottom: 10px; /* Espacio entre los artículos */
+            /*opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;*/
+        }
+
+        .item_new {
+            flex-basis: 100%; /* Ajusta el tamaño de cada artículo */
+            margin-bottom: 10px; /* Espacio entre los artículos */
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .details {
+            margin-left: 30px; /* Ajusta la distancia entre la imagen y el nombre del producto */
+        }
+
+        .total {
+            flex-basis: 100%;
+            text-align: right; /* Alinea el total a la derecha */
+        }
+        
+        .delete-button {
+            color: red; /* Cambia el color del texto a rojo */
+            font-size: 20px; /* Cambia el tamaño de la X */
+            padding: 8px; /* Ajusta el espacio alrededor de la X */
+            border: 1px solid rgb(255, 255, 255); /* Añade un borde al botón */
+            font-weight: bold; /* Hace que la X sea más gruesa */
+        }
+
+        .delete-button:hover {
+            background-color: rgb(203, 203, 203);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px); 
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0); 
+            }
+        }
+        
+        .checkout-container-wrapper {
+            max-height: 500px; /* Altura máxima del contenedor */
+            overflow-y: auto; /* Habilita el desplazamiento vertical cuando sea necesario */
+        }
+
+        h1 {
+            text-align: center; /* Centra el título horizontalmente */
+            color: #4169E1; /* Color azul */
+            font-size: 36px; /* Tamaño de la fuente */
+            margin-top: 20px; /* Espacio superior */
+            margin-bottom: 10px; /* Espacio inferior */
+            font-family: Arial, sans-serif; /* Fuente */
+        }
+
+        h2 {
+            text-align: center;
+            color: gray; /* Cambia el color del segundo título */
+            font-size: 15px; /* Tamaño del segundo título */
+            margin-top: 10px;
+            margin-bottom: 15px; /* Espacio inferior del segundo título */
+            font-family: Arial, sans-serif;
+            animation: pulse 2s infinite; /* Animación para el segundo título */
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        /*@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px); 
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0); 
+            }
+        }
+
+        .fade-up {
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }*/
+
+    </style>
+</head>
+<body>
+    <h1>CASHIER VISION PRO BILLING</h1> <!-- Nuevo título -->
+    <h2>PRODUCTS ARE BEING RECOGNIZED...</h2>
+    <div class="checkout-container-wrapper">
+    <div class="checkout-container">
+        {% for product_name, product_data in unique_products.items() %}
+            {% set formatted_product_name = {
+                'coke': 'Coke',
+                'nutella': 'Nutella',
+                'orepack': 'Oreopack',
+                'canbeans': 'CanBeans',
+                'jelly': 'Jello',
+                'coffenescafe': 'Nescafe',
+                'peanutbutter': 'PButter',
+                'barsoap': 'BarSoap',
+                'hotchocolate': 'HotChoco',
+                'pizzabox': 'PizzaSingles',
+                'teabox': 'TeaBox',
+                'tomatosauce': 'TomSauce'                
+            }.get(product_name, product_name|capitalize) %}
+            <div class="item {% if product_name in new_product %}item_new{% endif %}">
+                <img src="data:image/jpeg;base64,{{ product_data['code_image'] }}" alt="{{ product_name }}" title="{{ product_name }}" width="60x">
+                <div class="details">
+                    <!-- Display product details -->
+                    <div class="title-group">
+                        <span class="title">PRODUCT NAME</span>
+                        <span class="product-name">{{ formatted_product_name.upper() }}</span>
+                    </div>
+                    <div class="title-group">
+                        <span class="title">QUANTITY</span>
+                        <span class="per-unit">{{ product_data['quantity'] }}</span>
+                    </div>
+                    <div class="title-group">
+                        <span class="title">UNIT PRICE</span>
+                        <!-- Format unit price with 2 decimal places -->
+                        <span class="payable">${{ '%.2f'|format(product_data['total_price'] / product_data['quantity']) }}</span>
+                    </div>
+                    <div class="title-group">
+                        <span class="title">SUBTOTAL</span>
+                        <!-- Format total price with 2 decimal places -->
+                        <span class="total-amount">${{ '%.2f'|format(product_data['total_price']) }}</span>
+                    </div>
+                    <div class="title-group">
+                        <!-- Agregar el botón de eliminación -->
+                        <button class="delete-button" onclick="deleteProduct('{{ product_name }}')">X</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="total">
+            <!-- Display the total sum -->
+            <strong>TOTAL: ${{ '%.2f'|format(total_sum) }}</strong>
+        </div>
+        <!-- Botón de checkout -->
+        <div class="checkout">
+            <button class="checkout-button" onclick="redirectToQRPage()">CHECKOUT</button>
+            <button class="cancel-button" onclick="cancelPurchase()">CANCEL</button>
+        </div>
+        <!-- Espacio para mostrar el código QR 
+        <div id="qrcode"></div>-->
+
+        <!-- Total and checkout button sections 
+        <div class="checkout">
+            <button class="checkout-button">CHECKOUT</button>
+        </div>-->
+    </div>
+    </div>
+    
+    <script>
+        // Actualizar cada 2 segundos
+        setInterval(function() {
+            fetch('/update_checkout')
+                .then(response => response.text())
+                .then(data => {
+                    let tempElement = document.createElement('div');
+                    tempElement.innerHTML = data;
+    
+                    let newCheckout = tempElement.querySelector('.checkout-container');
+    
+                    let oldCheckout = document.querySelector('.checkout-container');
+                    oldCheckout.parentNode.replaceChild(newCheckout, oldCheckout);
+                })
+                .catch(error => console.error('Error:', error));
+        }, 5000);
+
+        function deleteProduct(productName) {
+            // Display confirmation dialog
+            let confirmDelete = confirm("Are you sure you want to delete this product?");
+            
+            if (confirmDelete) {
+                // Send request to server to delete the product
+                fetch('/delete_product?product=' + productName)
+                    .then(response => response.text())
+                    .then(data => {
+                        // Update the view after deleting the product
+                        let tempElement = document.createElement('div');
+                        tempElement.innerHTML = data;
+
+                        let newCheckout = tempElement.querySelector('.checkout-container');
+
+                        let oldCheckout = document.querySelector('.checkout-container');
+                        oldCheckout.parentNode.replaceChild(newCheckout, oldCheckout);
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+
+        // Function to redirect to the page for displaying QR code
+        function redirectToQRPage() {
+            // Verificar si hay elementos en el carrito
+            let items = document.querySelectorAll('.item');
+            if (items.length === 0) {
+                alert("There are no products in the cart. Please place the products to be scanned before proceeding to checkout");
+                return; // Salir de la función si el carrito está vacío
+            }
+
+            // Si hay elementos en el carrito, proceder al checkout normalmente
+            // Get the total amount from the backend or wherever it's stored
+            const totalSum = parseFloat('{{ total_sum }}');
+
+            // Redirect to the qr_code.html page with the total amount as query parameter
+            window.location.href = '/qr_code?total_sum=' + totalSum;
+        }
+
+        function cancelPurchase() {
+            // Display confirmation dialog
+            let confirmCancel = confirm("Are you sure you want to cancel this purchase?");
+            
+            if (confirmCancel) {
+                // Send request to server to delete all items in billprocess
+                fetch('/cancel_purchase')
+                    .then(response => response.text())
+                    .then(data => {
+                        // Redirect to the home page or any other appropriate action
+                        window.location.href = '/';
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+
+    </script>
+    
+</body>
+</html>

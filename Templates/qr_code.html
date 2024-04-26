@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        /* Ajusta el estilo del contenedor principal */
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center; /* Centra el título horizontalmente */
+            color: #4169E1; /* Color azul */
+            font-size: 36px; /* Tamaño de la fuente */
+            margin-top: 20px; /* Espacio superior */
+            margin-bottom: 10px; /* Espacio inferior */
+            font-family: Arial, sans-serif; /* Fuente */
+        }
+
+        /* Estilo del botón */
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn:hover {
+            background-color: #004692;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Scan this QR Code to Pay the Bill</h1>
+        <div id="qrcode">
+            <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+        </div>
+        <!-- Botón para iniciar nueva compra -->
+        <a href="/" class="btn" id="startPurchase">Start a new Purchase</a>
+    </div>
+
+    <script>
+        // Esperar 10 segundos antes de hacer clic en el botón
+        setTimeout(function() {
+            document.getElementById('startPurchase').click();
+        }, 20000);
+    </script>
+</body>
+</html>

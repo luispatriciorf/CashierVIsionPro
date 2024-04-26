@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashier Vision Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Estilos CSS adicionales pueden ir aquí si es necesario */
+        .welcome-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+        }
+
+        .welcome-title {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-title2 {
+            font-size: 12px;
+            margin-bottom: 20px;
+            margin-top: 5px;
+        }
+
+        .submit {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .invalid-id-message {
+            color: red;
+            display: none; /* Ocultar el mensaje por defecto */
+            margin-top: 10px;
+        }
+
+        .error-message {
+            text-align: center;
+            margin-top: 20px; /* Ajusta el margen superior según sea necesario */
+        }
+
+        /* Estilos CSS adicionales pueden ir aquí si es necesario */
+        .virtual-keyboard {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f0f0f0;
+            padding: 10px 0;
+            display: none; /* Inicialmente oculto */
+            text-align: center; /* Centrar contenido */
+        }
+
+        .key {
+            display: inline-block;
+            margin: 5px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        input[type="text"] {
+            font-size: 20px; /* Tamaño del texto */
+            width: 200px; /* Ancho del campo de entrada */
+            height: 40px; /* Altura del campo de entrada */
+            padding: 10px; /* Relleno interno del campo de entrada */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <h1 class="welcome-title">WELCOME TO CASHIER VISION PRO</h1>
+        <h2 class="welcome-title2">PLEASE, ENTER YOU CUSTOMER ID TO BEGIN</h2>
+        <form action="/" method="POST">
+        <div class="error-message">
+            {% if error_message %}
+                <p style="color: red;">{{ error_message }}</p>
+            {% endif %}
+        </div>
+        <label for="id_comprador">ID:</label>
+        <input type="text" id="id_comprador" name="id_comprador">
+        <button type="submit" class="submit">Submit</button>
+    </form>
+    </div>
+
+    <!-- Teclado virtual -->
+    <div class="virtual-keyboard" id="virtual-keyboard">
+        <div class="key" onclick="appendCharacter('1')">1</div>
+        <div class="key" onclick="appendCharacter('2')">2</div>
+        <div class="key" onclick="appendCharacter('3')">3</div>
+        <div class="key" onclick="appendCharacter('4')">4</div>
+        <div class="key" onclick="appendCharacter('5')">5</div>
+        <div class="key" onclick="appendCharacter('6')">6</div>
+        <div class="key" onclick="appendCharacter('7')">7</div>
+        <div class="key" onclick="appendCharacter('8')">8</div>
+        <div class="key" onclick="appendCharacter('9')">9</div>
+        <div class="key" onclick="appendCharacter('0')">0</div>
+        <div class="key" onclick="clearInput()">Clear</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    showVirtualKeyboard();
+                });
+            });
+        });
+
+        function showVirtualKeyboard() {
+            var virtualKeyboard = document.getElementById('virtual-keyboard');
+            virtualKeyboard.style.display = 'block';
+        }
+
+        function appendCharacter(char) {
+            var inputField = document.getElementById('id_comprador');
+            inputField.value += char;
+        }
+
+        function clearInput() {
+            var inputField = document.getElementById('id_comprador');
+            inputField.value = '';
+        }
+    </script>
+
+</body>
+</html>
